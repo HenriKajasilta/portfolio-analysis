@@ -14,6 +14,6 @@ Rest of the tables' inputs can be checked from StockMySQL.R file, in which it sh
 pretty intuitive to pair column names to tables.
 
 In the SQL server we should also have a view called 'summary'. SQL code for this view can be
-founded from the .txt file which is in protfolio folder as well. This view is updated when
-is is called from 'GetPorfolio.R' file, so take care that this view is available in MySQL.
+founded from the .txt file which is in portfolio folder as well. This view is updated when
+it is called from 'GetPorfolio.R' file, so take care that this view is available in MySQL.
 
