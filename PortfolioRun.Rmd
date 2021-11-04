@@ -1,0 +1,50 @@
+---
+title: "Portfolio"
+author: "Hece"
+date: "4 11 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+## Libraries
+library(openxlsx)
+library(quantmod)
+library(dplyr)
+library(jsonlite)
+library(lares)
+library(lubridate)
+library(ggplot2)
+library(ggrepel)
+library(scales)
+
+library(shiny)
+library(RMySQL)
+```
+
+
+
+```{r RunDocuments, echo = FALSE}
+
+# Run all the needed functions
+source("GetPortfolio.R")
+source("PortfolioAllocation.R")
+
+```
+
+
+
+
+```{r, echo = FALSE}
+# Get the data
+df <- stocks_file(Database = "stock")
+
+##
+```
+
+
+
+```{r, echo = FALSE}
+dfp <- PortfolioAnalysisPreparation(df$portfolio, StocksToDrop = "None")
+```
+
