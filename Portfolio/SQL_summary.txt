@@ -1,0 +1,38 @@
+CREATE OR REPLACE VIEW summary AS
+	SELECT
+		transaction.Ticker,
+		SUM(Quant) Count,
+        	Currency,
+        	ROUND(SUM(Quant * Value + Cost) * CASE Currency
+					WHEN 'USD' THEN 0.9
+                                        WHEN 'NOK'THEN 0.1
+                                        WHEN 'SEK' THEN 0.1
+                                        ELSE 1 END, 2) AS Invested,
+		ROUND(SUM(Quant * Value + Cost)/SUM(Quant) * CASE Currency
+					WHEN 'USD' THEN 0.9
+                                        WHEN 'NOK'THEN 0.1
+                                        WHEN 'SEK' THEN 0.1
+                                        ELSE 1 END, 2) AS StockInValue,
+        	IF(SUM(Quant) = 0, 0, ROUND(SUM(Quant * Value + Cost) * CASE Currency
+					WHEN 'USD' THEN 0.9
+                                        WHEN 'NOK'THEN 0.1
+                                        WHEN 'SEK' THEN 0.1
+                                        ELSE 1 END / temp.InvestedAll * 100, 2)) AS InvPer,
+        MAX(Inv) AS Trans,
+        MIN(Date) AS StartDate,
+        company.Product AS Product,
+        company.Sector AS Sector,
+        company.Country AS Country,
+        company.Type AS Type
+	FROM
+		transaction
+	CROSS JOIN (SELECT ROUND(SUM(Quant * IF(Currency = 'EUR', Value,
+						IF(Currency = 'USD', Value*0.9, Value*0.1)) + Cost), 2)
+							AS InvestedAll FROM transaction) temp
+
+        
+	LEFT JOIN company
+    	ON transaction.Ticker = company.Ticker
+        
+	GROUP BY
+	Ticker;

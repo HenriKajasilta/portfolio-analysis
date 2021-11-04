@@ -1,16 +1,13 @@
 ####################################################################
 #' Get Personal Portfolio's Data
 #' 
-#' This function lets the user download his personal Excel with his 
-#' Portfolio's data, locally or from Dropbox.
+#' This function lets the user fetch his 
+#' Portfolio's data, works locally.
 #' 
 #' @family Investment
 #' @family Credentials
-#' @param file Character. Import an Excel file, local or from URL.
-#' @param sheets Character Vector. Names of each sheet containing Portfolio summary,
-#' Cash, and Transactions information
-#' @param keep_old Boolean. Include sold tickers even though not currently in portfolio?
-#' @export
+#' @param Database Character. Import your database name
+#' @export Three tables, portfolio, transactions and cash
 
 stocks_file <- function(Database = "stock") {
   file <- function(db){
