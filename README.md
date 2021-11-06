@@ -18,6 +18,8 @@ founded from the .txt file which is in portfolio folder as well. This view is up
 it is called from 'GetPorfolio.R' file, so take care that this view is available in MySQL.
 
 ![MySQL_page](https://user-images.githubusercontent.com/92798719/140605182-bf5c7a8b-924a-4400-9764-a6ae79fb6bc5.png)
+
+
 Picture how the MySQL database should look like with the required tables and a view.
 
 
