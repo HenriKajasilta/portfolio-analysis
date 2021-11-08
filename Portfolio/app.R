@@ -1,19 +1,20 @@
 ####################################################################
-#' App to add Stocks, Transactions and Finance information into the Database
+#' App to add Stocks, Transactions, Deposits and Finance information into the Database
 #' 
-#' This file contains connection information to MySQL database. Database stock
-#' is divided into three separate sections: company, transaction and finance.
+#' This file contains required information of connection to MySQL database. Database stock
+#' is divided into four separate sections: company, transaction, deposit and finance.
 #' This application creates an interface to update databases. Results are
 #' visible in the database but also in the application interface.
 #' 
 #' @family Investment
 #' @export Application to update Stock database
-#' 
-#' 
 
 ## Libraries
 library(shiny)
 library(RMySQL)
+
+
+#### Set Ups ####
 
 
 ## Set up for SQL connection
@@ -47,13 +48,13 @@ dataDeposit <- dbGetQuery(con, "SELECT * FROM deposit")
 dbDisconnect(con)
 
 
-
+#### App ####
 
 
 ## UI and Server
 source("StockMySQL.R")
 
-## RVs for companies, transactions and finances
+## RVs for companies, transactions, finances and deposits
 
 # Stock
 RVCompany <- reactiveValues(data = dataCompany, rem = " ")
