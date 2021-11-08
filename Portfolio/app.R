@@ -21,7 +21,7 @@ options(mysql = list(
   "host" = "localhost",
   "port" = 3306,
   "user" = "henri",
-  "password" = names(read.csv("C:/Users/WhereEverYourPassWordIsLocated")) # Change accordingly
+  "password" = names(read.csv("Teksti.csv")) # Change accordingly
 ))
 databaseName <- "stock"
 

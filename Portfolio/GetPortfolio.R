@@ -21,7 +21,7 @@ stocks_file <- function(Database = "stock") {
         "host" = "localhost",
         "port" = 3306,
         "user" = "henri",
-        "password" = names(read.csv("D:/Matkakuvia/Teksti.csv"))
+        "password" = names(read.csv("Teksti.csv"))
       ))
       databaseName <- "stock"
       
