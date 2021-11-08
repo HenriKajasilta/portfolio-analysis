@@ -11,20 +11,27 @@ library(dplyr)
 #' Get Simulated Stock Returns for Missing Rows. Also Returns the
 #' Statistics of the simulated values
 #' 
-#' This function lets the user to complete the unfilled data
+#' This function will able user to complete the unfilled data
 #' 
 #' @family Investment
 #' @family Portfolio Analysis
-#' @param Table datatable or dataframe. Add returns table in order to fill missing values.
-#' @param Index Character. Name of the index that the simulated values are intended to correlate with.
-#' @param Seed Random Seed. This helps to achieve constant results in simulated values
-#' @param rm Remove last rows. How many last rows is removed from the data set. Automatically remove
-#' the last month, because it usually contains several missing values
-#' @export
+#' @param Portfolio Return from the 'GetPortfolio.R' file, portfolio table.
+#' @param StocksToDrop Character. List of the stocks that will not be included to the analysis.
+#' Name should match with the Portfolio's ticker, if the stock is wanted to be left out
+#' @param FillFrom Character, datetime. From which date the stock returns are inspected from,
+#' in case of missing values, this data is filled with simulations
+#' @param Periodic. Time periodic for average returns. Monthly seems to be the most sustainable one
+#' in practical use and therefore recommended to use. In weekly options, remind to start the week on Monday.
+#' @param RF Risk free returns, as a default, risk free profit percent is zero
+#' @param SH If shorts are available or not, as a default, shorting is not an option
+#' @param Port Number of the different allocations, when balancing between risk and profit
+#' @export FrontierWights A proposition how to allocate potfolio based on the earlier profits and volatility
+#' @export FrontierPlot Visual presentation how portfolio allocation is made along with the information of
+#' each stock's profit/risk location to each others
 
 
 PortfolioAnalysisPreparation <- function(Portfolio, StocksToDrop, FillFrom = "2010-01-01", Periodic = "monthly", RF = 0.0, SH = FALSE, Port = 25){
-  # Choose only those stocks, which is still owned.
+  # Choose only those stocks, which are still owned.
   Symb <- Portfolio[Portfolio$Count > 0,]$Ticker
   Symb <- Symb[!(Symb %in% StocksToDrop)]
 
@@ -39,7 +46,8 @@ PortfolioAnalysisPreparation <- function(Portfolio, StocksToDrop, FillFrom = "20
   
   # Order investments based on the missing returning values
   Return_Spread <- Symb_Return[!is.na(Symb_Return$ret),] %>% select(c("date", "symbol", "ret")) %>%
-    tidyr::spread(symbol, ret) %>% select(order(sapply(., function(x) sum(is.na(x)))))
+    dplyr::distinct(date, symbol, .keep_all = TRUE) %>%  tidyr::spread(symbol, ret) %>%
+    select(order(sapply(., function(x) sum(is.na(x)))))
 
 
 

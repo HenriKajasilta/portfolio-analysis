@@ -24,7 +24,7 @@ library(RMySQL)
 
 
 
-```{r RunDocuments, echo = FALSE}
+```{r RunDocuments, echo = FALSE, message=FALSE}
 
 # Run all the needed functions
 source("GetPortfolio.R")
