@@ -4,34 +4,6 @@ library(ggplot2)
 library(RMySQL)
 
 
-## Business Cycle
-WDI::WDIsearch('gdp.')
-
-WDI::WDI(indicator = 'NY.GDP.MKTP.KD.ZG', country = c('US', 'FIN', 'DEU', "SWE", "NOR"), start = 2016, end = 2020) %>%
-  group_by(country) %>% summarise(MCGG = mean(6.0.GDP_growth))
-  
-  
-## Sector in cycles
-
-## Risky
-
-# Financials (begining - value)
-# Information Technology (begining - growth)
-# Consumer Discretionary (upward - value/growth)
-# Materials (upward - value)
-# Industrials (upward - value)
-# Energy (end - value/growth)
-
-
-## Defensive
-
-# Communication Services (recession - growth)
-# Consumer Staples (recession - value/growth)
-# Utilities (recession - value)
-# Healthcare (recession - value/growth)
-
-
-
 
 ####################################################################
 #' Calculate the different scenarios of Intrinsic Value based on the
@@ -85,12 +57,17 @@ StockIntrisicValue <- function(Ticker, GrowthRate = c(5,5), GrowthWorst = c(0,0)
   # Disconnect
   dbDisconnect(con)
   
-  if(nrow(data) == 0 && (is.na(Dividend) || is.na(EPS))){
-   message("Data for given Ticker was not found, and also no given Dividend or EPS values")}
-  else if(sum(ScenarioProb) != 1 || any(ScenarioProb < 0)){
-    message("Check that scenario probabilities are correctly set --- Calculations stopped")}
-  else if(!is.logical(UseEPS)){
-    message("UseEPS not logical --- Calculations stopped")}
+  if(nrow(data) == 0 && (is.na(Dividend) && is.na(EPS))){
+    stop("Data for given Ticker was not found, and also no given Dividend or EPS values --- Calculation Stopped")}
+  if(length(GrowthRate) != 2 || length(GrowthWorst) != 2 || length(GrowthBest) != 2){
+    stop("Growth scenarios are not correctly input --- Calculations stopped")}
+  if(!is.numeric(Discount) || Discount > 50){
+    stop("Discount rate doesn't seem correct --- Calculation stopped")}
+  if(sum(ScenarioProb) != 1 || any(ScenarioProb < 0)){
+    stop("Check that scenario probabilities are correctly set --- Calculations stopped")}
+  if(!is.logical(UseEPS)){
+    stop("UseEPS not logical --- Calculations stopped")}
+  
   else{
     message("Input values checked...")
     
@@ -133,7 +110,7 @@ StockIntrisicValue <- function(Ticker, GrowthRate = c(5,5), GrowthWorst = c(0,0)
       
       
     ## Plots to keep support or possible validation regarding the used numbers
-    if(nrow(data) != 0){
+    if(nrow(data) != 0 && UseEPS){
       EPSinYears <- data.frame(EPS = data$NetIncome / data$WeightedAverageCommonSharesStanding,
                                ROA = data$NetIncome/data$TotalAssets, Year = data$Year, Type = "solid")
       # Initialize values for Profit Margin
@@ -179,7 +156,7 @@ StockIntrisicValue <- function(Ticker, GrowthRate = c(5,5), GrowthWorst = c(0,0)
     StockSummary$BestCaseCF <- BestCase$CF
     
     # Add plot if possible
-    if(nrow(data) != 0){
+    if(nrow(data) != 0 && UseEPS){
       StockSummary$Perspective <- EPSPlot
     }
       
@@ -268,3 +245,38 @@ CashFlowFunction <- function(EPS, Dividend, GrowthRate0, GrowthRate1, Discount, 
 
 
 a <- StockIntrisicValue("OLVAS.HE", GrowthRate = c(7,8), GrowthWorst = c(3,3), GrowthBest = c(9,13), Discount = 8, ScenarioProb = c(0.25, 0.45, 0.3), PEFuture = c(15,22,29), UseEPS = T)
+
+
+
+
+## Business Cycle
+WDI::WDIsearch('stock.*sector')
+# 
+WDI::WDI(indicator = 'NY.GDP.MKTP.KD.ZG', country = c('US', 'FIN', 'DEU', "SWE", "NOR"), start = 2000, end = 2020) # %>%
+#   group_by(country) %>% summarise(MCGG = mean(6.0.GDP_growth))
+
+
+a <- WDI::WDI(indicator = 'DSTKMKTXD', country = c('US', 'FIN', 'DEU', "SWE", "NOR"), start = 2000, end = 2020)
+
+
+
+
+
+## Sector in cycles
+
+## Risky
+
+# Financials (begining - value)
+# Information Technology (begining - growth)
+# Consumer Discretionary (upward - value/growth)
+# Materials (upward - value)
+# Industrials (upward - value)
+# Energy (end - value/growth)
+
+
+## Defensive
+
+# Communication Services (recession - growth)
+# Consumer Staples (recession - value/growth)
+# Utilities (recession - value)
+# Healthcare (recession - value/growth)
